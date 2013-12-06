@@ -74,11 +74,7 @@ module Globalize
 
         options = {:translated => Globalize.read_translated_attribute, :locale => nil}.merge(options)
         if self.class.translated?(name) and options[:translated]
-          if (value = globalize.fetch(options[:locale] || Globalize.locale, name))
-            value
-          else
-            super(name)
-          end
+          globalize.fetch(options[:locale] || Globalize.locale, name)
         else
           super(name)
         end
