@@ -72,7 +72,7 @@ module Globalize
           options = {:locale => options}
         end
 
-        options = {:translated => true, :locale => nil}.merge(options)
+        options = {:translated => Globalize.read_translated_attribute, :locale => nil}.merge(options)
         if self.class.translated?(name) and options[:translated]
           if (value = globalize.fetch(options[:locale] || Globalize.locale, name))
             value
@@ -175,9 +175,13 @@ module Globalize
     private
 
       def update(*)
+        if Globalize.locale != I18n.default_locale
+          Globalize.read_translated_attribute = false
+        end
         I18n.with_locale(read_attribute(:locale) || I18n.default_locale) do
           super
         end
+        Globalize.read_translated_attribute = true
       end
 
       def create(*)

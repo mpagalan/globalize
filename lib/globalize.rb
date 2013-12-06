@@ -9,6 +9,8 @@ module Globalize
   autoload :Interpolation,   'globalize/interpolation'
 
   class << self
+    Thread.current[:globalize_read_translated_attribute] = true
+
     def locale
       read_locale || I18n.locale
     end
@@ -50,6 +52,13 @@ module Globalize
       i18n_fallbacks? ? I18n.fallbacks[for_locale] : [for_locale.to_sym]
     end
 
+    def read_translated_attribute=(val=true)
+      Thread.current[:globalize_read_translated_attribute] = val
+    end
+
+    def read_translated_attribute
+      !!Thread.current[:globalize_read_translated_attribute]
+    end
   protected
 
     def read_locale
