@@ -75,7 +75,7 @@ module Globalize
         options = {:translated => Globalize.read_translated_attribute, :locale => nil}.merge(options)
         if self.class.translated?(name) and options[:translated]
           value = globalize.fetch(options[:locale] || Globalize.locale, name)
-          if value.nil? &&  Globalize.locale == I18n.default_locale
+          if value.nil? &&  (options[:locale] || Globalize.locale) == I18n.default_locale
             super(name)
           else
            value
