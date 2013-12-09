@@ -44,7 +44,7 @@ module Globalize
             options = {:locale => options}
           end
           options = {:locale => Globalize.locale}.merge(options)
-          
+
           # Dirty tracking, paraphrased from
           # ActiveRecord::AttributeMethods::Dirty#write_attribute.
           name_str = name.to_s
@@ -58,7 +58,7 @@ module Globalize
             old = old.clone if old.duplicable?
             changed_attributes[name_str] = old if value != old
           end
-          
+
           globalize.write(options[:locale], name, value)
         else
           super(name, value)
@@ -74,7 +74,12 @@ module Globalize
 
         options = {:translated => Globalize.read_translated_attribute, :locale => nil}.merge(options)
         if self.class.translated?(name) and options[:translated]
-          globalize.fetch(options[:locale] || Globalize.locale, name)
+          value = globalize.fetch(options[:locale] || Globalize.locale, name)
+          if value.nil? &&  Globalize.locale == I18n.default_locale
+            super(name)
+          else
+           value
+          end
         else
           super(name)
         end
